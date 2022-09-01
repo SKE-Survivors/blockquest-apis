@@ -34,6 +34,6 @@ body: `{ "username": "username", "password": "password" }`
 
 #### POST `http://127.0.0.1:5000/update/section?mail=[email]&id=[id]`
 
-#### Bag
+### Bag
 
 #### POST `http://127.0.0.1:5000/update/section?mail=[email]&item=[item]`
