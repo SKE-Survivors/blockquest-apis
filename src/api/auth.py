@@ -20,10 +20,15 @@ def index():
 @auth_endpoint.route("/signup", methods=["POST"])
 @cross_origin()
 def signup():
-    username = request.form["username"]
-    email = request.form["email"]
-    password = request.form["password"]
-    confirm_password = request.form["confirm-password"]
+    try:
+        data = request.json
+        username = data["username"]
+        email = data["email"]
+        password = data["password"]
+        confirm_password = data["confirm-password"]
+
+    except Exception as err:
+        return build_response(status_code=400, err=err)
 
     if not email:
         body = {"STATUS": "FAILED", "MESSAGE": f"Email is required!"}
@@ -63,8 +68,13 @@ def signup():
 @auth_endpoint.route("/login", methods=["POST"])
 @cross_origin()
 def login():
-    email = request.form["email"]
-    password = request.form["password"]
+    try:
+        data = request.json
+        email = data["email"]
+        password = data["password"]
+
+    except Exception as err:
+        return build_response(status_code=400, err=err)
 
     if not email:
         body = {"STATUS": "FAILED", "MESSAGE": f"Email is required!"}
