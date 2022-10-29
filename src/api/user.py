@@ -1,7 +1,7 @@
 import bcrypt
 from flask import Blueprint, request
 from flask_cors import CORS, cross_origin
-from handler.database import DatabaseHandler
+from handler import DatabaseHandler
 from utils import build_response
 
 user_endpoint = Blueprint('user', __name__)
