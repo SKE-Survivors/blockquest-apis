@@ -1,12 +1,19 @@
 import bcrypt
-from flask import Blueprint
-from flask_cors import cross_origin, request
+from flask import Blueprint, request
+from flask_cors import CORS, cross_origin
 from handler.database import DatabaseHandler
 from utils import build_response
 
 user_endpoint = Blueprint('user', __name__)
+CORS(user_endpoint)
+
 dbh = DatabaseHandler()
 salt = bcrypt.gensalt()
+
+
+@user_endpoint.route('/')
+def index():
+    return 'user ok!'
 
 
 # todo: choose btw line 13 and 14. if use line 14, remove else case (line 88) instead

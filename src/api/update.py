@@ -1,10 +1,17 @@
-from flask import Blueprint
-from flask_cors import cross_origin, request
+from flask import Blueprint, request
+from flask_cors import CORS, cross_origin
 from handler.database import DatabaseHandler
 from utils import build_response
 
 update_endpoint = Blueprint('update', __name__)
+CORS(update_endpoint)
+
 dbh = DatabaseHandler()
+
+
+@update_endpoint.route('/')
+def index():
+    return 'update ok!'
 
 
 @update_endpoint.route("/section", methods=["POST"])
