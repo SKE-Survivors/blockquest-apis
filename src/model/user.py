@@ -1,12 +1,12 @@
-from mongoengine import *
+from mongoengine import connect, Document, StringField, ListField, EmailField, DictField
 from decouple import config
-from section import Lesson, Story
+from model.section import Lesson, Story
 
 
 class User(Document):
-    email = EmailField(required=True, unique=True)
+    email = EmailField(primary_key=True, required=True)
     username = StringField(required=True, max_length=20)
-    password = StringField(required=True, max_length=20)
+    password = StringField(required=True)
     unlocked_lesson = DictField(default={})
     unlocked_story = DictField(default={})
     bag = ListField(default=[])

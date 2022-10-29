@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: on-failure
-    container_name: blockquest-app
+    container_name: blockquest-api
     environment:
       - DB_HOST=database
       - DB_PORT=27017

@@ -1,4 +1,4 @@
-from mongoengine import *
+from mongoengine import connect, Document, StringField, ListField
 from decouple import config
 
 
