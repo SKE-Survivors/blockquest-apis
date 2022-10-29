@@ -54,6 +54,7 @@ def user():
             mail = request.args.get("mail")
             data = request.json
 
+            # todo: refactor change to email
             for key in data:
                 if key != "username" and key != "password":
                     return build_response(

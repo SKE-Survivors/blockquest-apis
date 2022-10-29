@@ -16,16 +16,48 @@
 
 ## Endpoints
 
+### Auth
+
+- Manual
+
+  - POST `/api/auth/signup`
+
+    ```py
+    body = {
+      "email": "",
+      "username": "",
+      "password": "",
+      "confirm-password": "",
+    }
+    ```
+
+  - POST `/api/auth/login`
+
+    ```py
+    body = {
+      "email": "",
+      "password": "",
+    }
+    ```
+
+  - GET `/api/auth/logout?email=[email]` (not supposed to be, but easier)
+  - GET `/api/auth/check?email=[email]&&token=[token]`
+
+- Google
+  - `/api/auth/google/login` (redirect)
+
 ### User
 
 - GET: `/api/user?mail=[email]`
-<!-- - POST: `/api/user`
-
-  body: `{ "mail": "email@email.com", "username": "username", "password": "password" }` -->
 
 - PUT `/api/user?mail=[email]`
 
-  body: `{ "username": "username", "password": "password" }`
+  ```py
+  body = {
+    "username": "",
+    "password": "",
+  }
+  ```
 
 - DELETE `/api/user?mail=[email]`
 
