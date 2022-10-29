@@ -1,7 +1,7 @@
-from flask import Flask, Blueprint, url_for
+from flask import Flask, Blueprint, url_for, request
 from flask_cors import CORS, cross_origin
 from authlib.integrations.flask_client import OAuth
-from handler import DatabaseHandler
+from handler import DatabaseHandler, SessionHandler
 from utils import build_response
 from decouple import config
 
@@ -17,7 +17,9 @@ oauth.register(
     server_metadata_url=config("CONF_URL"),
     client_kwargs={"scope": "openid email profile"},
 )
+
 dbh = DatabaseHandler()
+sh = SessionHandler()
 
 
 @google_endpoint.route('/')
@@ -37,13 +39,29 @@ def google_login():
 def authorize():
     token = oauth.google.authorize_access_token()
     user = token['userinfo']
-    # user["email"]
-    # user["name"]
 
-    # todo:
-    # 1. check if user exist
-    # 2. (if not) create user, add to database
-    # 3. gen token and add to redis
+    try:
+        data = request.json
+        # check if user exist
+        user = dbh.find_user(data["username"])
+        # (if not) create user, add to database
+        if not user:
+            user = dbh.add_user(
+                mail=data["mail"],
+                username=data["username"],
+                password="",  # or None
+            )
+    except Exception as err:
+        body = {"STATUS": "FAILED", "MESSAGE": f"Authorization failed"}
+        return build_response(status_code=400, err=err)
 
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"Authorization successfully"}
+    # gen token and add to redis
+    token = sh.set_session(user.email)
+    body = {
+        "STATUS": "SUCCESS",
+        "MESSAGE": {
+            "email": user.email,
+            "token": token
+        }
+    }
     return build_response(status_code=201, body=body)

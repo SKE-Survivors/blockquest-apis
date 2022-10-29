@@ -8,6 +8,8 @@ CORS(update_endpoint)
 
 dbh = DatabaseHandler()
 
+# todo: check login session
+
 
 @update_endpoint.route('/')
 def index():

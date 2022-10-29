@@ -10,14 +10,14 @@ CORS(user_endpoint)
 dbh = DatabaseHandler()
 salt = bcrypt.gensalt()
 
+# todo: check login session
+
 
 @user_endpoint.route('/')
 def index():
     return 'user ok!'
 
 
-# todo: choose btw line 13 and 14. if use line 14, remove else case (line 88) instead
-# @user_endpoint.route("/", methods=["POST", "GET", "PUT", "DELETE"])
 @user_endpoint.route("/")
 @cross_origin()
 def user():
@@ -48,18 +48,6 @@ def user():
 
         except Exception as err:
             return build_response(status_code=400, err=err)
-
-    # todo: remove this comment (after create register). POST will be in the register endpoint
-    # elif request.method == 'POST':
-    #     try:
-    #         data = request.json
-    #         user_handler.add_user(mail=data["mail"],
-    #                               username=data["username"],
-    #                               password=bcrypt.hashpw(
-    #                                   data["password"].encode('utf-8'), salt))
-    #         body = {"STATUS": "SUCCESS", "MESSAGE": f"ADD USER {data['mail']}"}
-    #     except Exception as err:
-    #         return build_response(status_code=400, err=err)
 
     elif request.method == "PUT":
         try:
