@@ -1,7 +1,6 @@
-from mongoengine import *
+from mongoengine import connect, Document, StringField, ListField, EmailField, DictField
 from decouple import config
 from model.section import Lesson, Story
-
 
 
 class User(Document):
