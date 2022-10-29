@@ -1,11 +1,11 @@
 import bcrypt
 from flask import Blueprint
 from flask_cors import cross_origin, request
-from model.user import UserHandler
+from handler.database import DatabaseHandler
 from utils import build_response
 
 user_endpoint = Blueprint('user', __name__)
-user_handler = UserHandler()
+dbh = DatabaseHandler()
 salt = bcrypt.gensalt()
 
 
@@ -17,7 +17,7 @@ def user():
     if request.method == "GET":
         try:
             mail = request.args.get("mail")
-            user = user_handler.find_user(mail=mail)
+            user = dbh.find_user(mail=mail)
 
             email = user.email
             username = user.username
@@ -69,7 +69,7 @@ def user():
                 if key == "password":
                     data[key] = bcrypt.hashpw(data[key].encode('utf-8'), salt)
 
-            user_handler.update_profile(mail, **data)
+            dbh.update_profile(mail, **data)
             body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {mail}"}
 
         except Exception as err:
@@ -79,7 +79,7 @@ def user():
         try:
             mail = request.args.get("mail")
 
-            user_handler.delete_user(mail=mail)
+            dbh.delete_user(mail=mail)
             body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {mail}"}
 
         except Exception as err:
