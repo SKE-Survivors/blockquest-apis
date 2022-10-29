@@ -8,7 +8,7 @@ CORS(update_endpoint)
 
 dbh = DatabaseHandler()
 
-# todo: check login session
+# todo: check login session (aka call /auth/check before)
 
 
 @update_endpoint.route('/')

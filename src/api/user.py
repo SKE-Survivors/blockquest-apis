@@ -10,7 +10,7 @@ CORS(user_endpoint)
 dbh = DatabaseHandler()
 salt = bcrypt.gensalt()
 
-# todo: check login session
+# todo: check login session (aka call /auth/check before)
 
 
 @user_endpoint.route('/')

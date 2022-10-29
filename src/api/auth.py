@@ -102,3 +102,16 @@ def logout():
 
     body = {"STATUS": "SUCCESS", "MESSAGE": f"Logout successfully"}
     return build_response(status_code=200, body=body)
+
+
+@auth_endpoint.route("/check")
+@cross_origin()
+def check():
+    email = request.args.get("email")
+    token = request.args.get("token")
+
+    msg = "User is authorized" if sh.check_session(
+        email, token) else "User is not authorized"
+
+    body = {"STATUS": "SUCCESS", "MESSAGE": msg}
+    return build_response(status_code=200, body=body)
