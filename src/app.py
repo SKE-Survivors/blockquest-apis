@@ -1,19 +1,19 @@
 from flask import Flask
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from decouple import config
-
-from api.user import user_endpoint
-from api.update import update_endpoint
+import api
 
 app = Flask(__name__)
 CORS(app)
 
-app.register_blueprint(user_endpoint, url_prefix='/api/user')
-app.register_blueprint(update_endpoint, url_prefix='/api/update')
+app.register_blueprint(api.auth_endpoint, url_prefix='/api/auth')
+app.register_blueprint(api.google_endpoint, url_prefix='/api/auth/google')
+
+app.register_blueprint(api.user_endpoint, url_prefix='/api/user')
+app.register_blueprint(api.update_endpoint, url_prefix='/api/update')
 
 
 @app.route('/')
-@cross_origin()
 def root():
     return 'all good!'
 
