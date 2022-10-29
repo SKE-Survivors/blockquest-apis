@@ -16,24 +16,22 @@
 
 ## Endpoints
 
-### User handler
+### User
 
-#### GET: `http://127.0.0.1:5000/user?mail=[email]`
+- GET: `/api/user?mail=[email]`
+<!-- - POST: `/api/user`
 
-#### POST: `http://127.0.0.1:5000/user`
+  body: `{ "mail": "email@email.com", "username": "username", "password": "password" }` -->
 
-body: `{ "mail": "email@email.com", "username": "username", "password": "password" }`
+- PUT `/api/user?mail=[email]`
 
-#### PUT `http://127.0.0.1:5000/user?mail=[email]`
+  body: `{ "username": "username", "password": "password" }`
 
-body: `{ "username": "username", "password": "password" }`
+- DELETE `/api/user?mail=[email]`
 
-#### DELETE `http://127.0.0.1:5000/user?mail=[email]`
+### Update
 
-### Section
-
-#### POST `http://127.0.0.1:5000/update/section?mail=[email]&id=[id]`
-
-### Bag
-
-#### POST `http://127.0.0.1:5000/update/section?mail=[email]&item=[item]`
+- Section
+  - POST `/api/update/section?mail=[email]&id=[id]`
+- Bag
+  - POST `/api/update/section?mail=[email]&item=[item]`
