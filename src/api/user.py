@@ -9,7 +9,7 @@ user_handler = UserHandler()
 salt = bcrypt.gensalt()
 
 
-# todo: choose btw line 11 and 12. if use line 12, remove else case (line 86) instead
+# todo: choose btw line 13 and 14. if use line 14, remove else case (line 88) instead
 # @user_endpoint.route("/", methods=["POST", "GET", "PUT", "DELETE"])
 @user_endpoint.route("/")
 @cross_origin()
