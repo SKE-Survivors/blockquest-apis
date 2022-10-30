@@ -26,6 +26,10 @@ def user():
         body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument'}
         return build_response(status_code=400, body=body)
 
+    if not dbh.find_user(mail):
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
+        return build_response(status_code=400, body=body)
+
     if request.method == "GET":
         user = dbh.find_user(mail=mail)
         email = user.email

@@ -36,7 +36,11 @@ class DatabaseHandler:
         return user
 
     def find_user(self, mail) -> User:
-        return User.objects.get(email=mail)
+        try:
+            user = User.objects.get(email=mail)
+        except User.DoesNotExist:
+            user = None
+        return user
 
     def delete_user(self, mail):
         user = self.find_user(mail)
