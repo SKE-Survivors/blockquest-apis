@@ -6,9 +6,11 @@ class User(Document):
     email = EmailField(primary_key=True, required=True)
     username = StringField(required=True, max_length=20)
     password = BinaryField(required=True)
+    bag = ListField(default=[])
+
+    # todo: add default sections {section_id: False, ...}
     unlocked_lesson = DictField(default={})
     unlocked_story = DictField(default={})
-    bag = ListField(default=[])
 
 
 # ! temporary: just for testing
@@ -26,4 +28,13 @@ if __name__ == '__main__':
         email="first@gmail.com",
         username="username",
         password=b"password",
+        unlocked_lesson={
+            "L1": False,
+            "L2": False,
+            "L3": False,
+        },
+        unlocked_story={
+            "S1": False,
+            "S2": False,
+        },
     ).save()

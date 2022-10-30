@@ -22,12 +22,25 @@ def unlock_section():
     mail = request.args.get("mail")
     section_id = request.args.get("id")
 
-    if not dbh.find_user(mail):
+    # todo: check args existence
+    section = str(section_id).upper()
+
+    user = dbh.find_user(mail)
+    if not user:
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
-    dbh.unlock_section(mail, section_id)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section_id} UNLOCKED"}
+    l1 = list(user.unlocked_lesson.keys())
+    l2 = list(user.unlocked_story.keys())
+    if section not in l1 + l2:
+        body = {
+            "STATUS": "FAILED",
+            "MESSAGE": f"Section not exist (for the user)"
+        }
+        return build_response(status_code=400, body=body)
+
+    dbh.unlock_section(mail, section)
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} UNLOCKED"}
     return build_response(status_code=201, body=body)
 
 
@@ -36,6 +49,8 @@ def unlock_section():
 def update_bag():
     mail = request.args.get("mail")
     item = request.args.get("item")
+
+    # todo: check args existence
 
     if not dbh.find_user(mail):
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
