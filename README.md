@@ -43,12 +43,12 @@
   - GET `/api/auth/logout?email=[email]` (not supposed to be, but easier)
   - GET `/api/auth/check?email=[email]&token=[token]`
 
-- Google
-  - `/api/auth/google/login` (redirect)
+- OAuth
+  - GET `/api/auth/login/google` (redirect)
 
 ### User
 
-- GET: `/api/user/profile?mail=[email]`
+- GET `/api/user/profile?mail=[email]`
 
 - PUT `/api/user/profile?mail=[email]`
 
