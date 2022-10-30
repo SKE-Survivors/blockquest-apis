@@ -66,11 +66,14 @@ class DatabaseHandler:
             raise ValueError("invalid section id")
         print(f"Updated [section status] user: {mail}")
 
-    def update_bag(self, mail, item):
+    def update_bag(self, mail, item_name, add=True):
         user = self.find_user(mail)
-        if item in user.bag:
-            user.bag.remove(item)
-        else:
+        item = item_name.upper()
+
+        if add:
             user.bag.append(item)
+        else:
+            if item in user.bag:
+                user.bag.remove(item)
         user.save()
         print(f"Updated [bag item] user: {mail}")

@@ -64,6 +64,8 @@
 ### Update
 
 - Section
-  - POST `/api/update/section?mail=[email]&id=[id]`
+  - POST `/api/update/section/unlock?mail=[email]&id=[id]`
+  - POST `/api/update/section/lock?mail=[email]&id=[id]`
 - Bag
-  - POST `/api/update/bag?mail=[email]&item=[item]`
+  - POST `/api/update/bag/add?mail=[email]&item=[item]`
+  - POST `/api/update/bag/remove?mail=[email]&item=[item]`
