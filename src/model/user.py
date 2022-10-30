@@ -1,11 +1,11 @@
-from mongoengine import connect, Document, StringField, ListField, EmailField, DictField
+from mongoengine import connect, Document, StringField, ListField, EmailField, DictField, BinaryField
 from decouple import config
 
 
 class User(Document):
     email = EmailField(primary_key=True, required=True)
     username = StringField(required=True, max_length=20)
-    password = StringField(required=True)
+    password = BinaryField(required=True)
     unlocked_lesson = DictField(default={})
     unlocked_story = DictField(default={})
     bag = ListField(default=[])
@@ -25,5 +25,5 @@ if __name__ == '__main__':
     User(
         email="first@gmail.com",
         username="username",
-        password="password",
+        password=b"password",
     ).save()

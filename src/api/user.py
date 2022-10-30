@@ -18,71 +18,56 @@ def index():
     return 'user ok!'
 
 
-@user_endpoint.route("/profile")
+@user_endpoint.route("/profile", methods=['GET', 'PUT', 'DELETE'])
 @cross_origin()
 def user():
-    if request.method == "GET":
-        try:
-            mail = request.args.get("mail")
-            user = dbh.find_user(mail=mail)
-
-            email = user.email
-            username = user.username
-            password = user.password
-            lesson = user.unlocked_lesson
-            story = user.unlocked_story
-            bag = user.bag
-
-            body = {
-                "STATUS":
-                "SUCCESS",
-                "userInfo": [{
-                    "mail": email,
-                    "username": username,
-                    "password": password,
-                    "unlocked_lesson": lesson,
-                    "unlocked_story": story,
-                    "bag": bag
-                }],
-            }
-
-        except Exception as err:
-            return build_response(status_code=400, err=err)
-
-    elif request.method == "PUT":
-        try:
-            mail = request.args.get("mail")
-            data = request.json
-
-            # todo: refactor change to email
-            for key in data:
-                if key != "username" and key != "password":
-                    return build_response(
-                        {
-                            'STATUS': 'FAILED',
-                            'MESSAGE': 'INCORRECT BODY'
-                        }, 400)
-                if key == "password":
-                    data[key] = bcrypt.hashpw(data[key].encode('utf-8'), salt)
-
-            dbh.update_profile(mail, **data)
-            body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {mail}"}
-
-        except Exception as err:
-            return build_response(status_code=400, err=err)
-
-    elif request.method == "DELETE":
-        try:
-            mail = request.args.get("mail")
-
-            dbh.delete_user(mail=mail)
-            body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {mail}"}
-
-        except Exception as err:
-            return build_response(status_code=400, err=err)
-
-    else:
-        body = {'STATUS': 'FAILED', 'MESSAGE': 'INCORRECT METHOD'}
+    mail = request.args.get("mail")
+    if not mail:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument'}
         return build_response(status_code=400, body=body)
+
+    if request.method == "GET":
+        user = dbh.find_user(mail=mail)
+        email = user.email
+        username = user.username
+        lesson = user.unlocked_lesson
+        story = user.unlocked_story
+        bag = user.bag
+        body = {
+            "STATUS":
+            "SUCCESS",
+            "userInfo": [{
+                "mail": email,
+                "username": username,
+                "unlocked_lesson": lesson,
+                "unlocked_story": story,
+                "bag": bag
+            }],
+        }
+
+    if request.method == "PUT":
+        data = request.json
+        if not data:
+            body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing body'}
+            return build_response(status_code=400, body=body)
+
+        for key in data:
+            if key != "username" and key != "password":
+                return build_response(
+                    status_code=400,
+                    body={
+                        'STATUS': 'FAILED',
+                        'MESSAGE': 'INCORRECT BODY'
+                    },
+                )
+            if key == "password":
+                data[key] = bcrypt.hashpw(data[key].encode('utf-8'), salt)
+
+        dbh.update_profile(mail, **data)
+        body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {mail}"}
+
+    if request.method == "DELETE":
+        dbh.delete_user(mail=mail)
+        body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {mail}"}
 
     return build_response(status_code=201, body=body)
