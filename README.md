@@ -41,16 +41,16 @@
     ```
 
   - GET `/api/auth/logout?email=[email]` (not supposed to be, but easier)
-  - GET `/api/auth/check?email=[email]&&token=[token]`
+  - GET `/api/auth/check?email=[email]&token=[token]`
 
 - Google
   - `/api/auth/google/login` (redirect)
 
 ### User
 
-- GET: `/api/user?mail=[email]`
+- GET: `/api/user/profile?mail=[email]`
 
-- PUT `/api/user?mail=[email]`
+- PUT `/api/user/profile?mail=[email]`
 
   ```py
   body = {
@@ -59,11 +59,11 @@
   }
   ```
 
-- DELETE `/api/user?mail=[email]`
+- DELETE `/api/user/profile?mail=[email]`
 
 ### Update
 
 - Section
   - POST `/api/update/section?mail=[email]&id=[id]`
 - Bag
-  - POST `/api/update/section?mail=[email]&item=[item]`
+  - POST `/api/update/bag?mail=[email]&item=[item]`

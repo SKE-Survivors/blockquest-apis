@@ -18,7 +18,7 @@ def index():
     return 'user ok!'
 
 
-@user_endpoint.route("/")
+@user_endpoint.route("/profile")
 @cross_origin()
 def user():
     if request.method == "GET":
