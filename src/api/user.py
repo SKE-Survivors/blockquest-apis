@@ -1,14 +1,12 @@
-import bcrypt
 from flask import Blueprint, request
 from flask_cors import CORS, cross_origin
 from handler import DatabaseHandler
-from utils import build_response
+from utils import build_response, encode_pwd
 
 user_endpoint = Blueprint('user', __name__)
 CORS(user_endpoint)
 
 dbh = DatabaseHandler()
-salt = bcrypt.gensalt()
 
 # todo: check login session (aka call /auth/check before)
 
@@ -49,6 +47,7 @@ def user():
             }],
         }
 
+    # todo: add confirm-password field
     if request.method == "PUT":
         data = request.json
         if not data:
@@ -65,7 +64,7 @@ def user():
                     },
                 )
             if key == "password":
-                data[key] = bcrypt.hashpw(data[key].encode('utf-8'), salt)
+                data[key] = encode_pwd(data[key])
 
         dbh.update_profile(mail, **data)
         body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {mail}"}

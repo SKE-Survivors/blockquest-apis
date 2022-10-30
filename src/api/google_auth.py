@@ -50,7 +50,7 @@ def authorize():
             user = dbh.add_user(
                 mail=data["mail"],
                 username=data["username"],
-                password="",  # or None
+                password=b"",  # or None
             )
     except Exception as err:
         body = {"STATUS": "FAILED", "MESSAGE": f"Authorization failed"}
