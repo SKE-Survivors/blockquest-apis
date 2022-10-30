@@ -100,7 +100,7 @@ def login():
 def logout():
     email = request.args.get("email")
 
-    if dbh.find_user(email):
+    if not dbh.find_user(email):
         body = {"STATUS": "FAILED", "MESSAGE": f"User not exist"}
         return build_response(status_code=400, body=body)
 
@@ -115,7 +115,7 @@ def check():
     email = request.args.get("email")
     token = request.args.get("token")
 
-    if dbh.find_user(email):
+    if not dbh.find_user(email):
         body = {"STATUS": "FAILED", "MESSAGE": f"User not exist"}
         return build_response(status_code=400, body=body)
 
