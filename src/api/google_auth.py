@@ -3,7 +3,8 @@ from flask_cors import CORS, cross_origin
 from authlib.integrations.flask_client import OAuth
 from handler import DatabaseHandler, SessionHandler
 from utils import build_response
-from decouple import config
+
+CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
 
 google_endpoint = Blueprint('google-auth', __name__)
 CORS(google_endpoint)
@@ -14,7 +15,7 @@ CORS(app)
 oauth = OAuth(app)
 oauth.register(
     name="google",
-    server_metadata_url=config("CONF_URL"),
+    server_metadata_url=CONF_URL,
     client_kwargs={"scope": "openid email profile"},
 )
 
