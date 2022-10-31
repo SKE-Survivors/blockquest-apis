@@ -2,8 +2,8 @@ from handler import DatabaseHandler, SessionHandler
 from utils import build_response
 
 
-def handle_authorize(remote, token, user_info):
-    # if token:
+def handle_authorize(remote, _token, user_info):
+    # if _token:
     #     save_token(remote.name, token)
 
     if not user_info:
