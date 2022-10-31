@@ -20,7 +20,7 @@
 
 - Manual
 
-  - POST `/api/auth/signup`
+  - POST: `/api/auth/signup`
 
     ```py
     body = {
@@ -31,7 +31,7 @@
     }
     ```
 
-  - POST `/api/auth/login`
+  - POST: `/api/auth/login`
 
     ```py
     body = {
@@ -40,17 +40,17 @@
     }
     ```
 
-  - GET `/api/auth/logout?email=[email]` (not supposed to be, but easier)
-  - GET `/api/auth/check?email=[email]&token=[token]`
+  - GET: `/api/auth/logout?email=[email]` (not supposed to be, but easier)
+  - GET: `/api/auth/check?email=[email]&token=[token]`
 
 - OAuth
-  - GET `/api/auth/login/google` (redirect)
+  - GET: `/api/auth/login/google` (redirect)
 
 ### User
 
-- GET `/api/user/profile?mail=[email]`
+- GET: `/api/user/profile?mail=[email]`
 
-- PUT `/api/user/profile?mail=[email]`
+- PUT: `/api/user/profile?mail=[email]`
 
   ```py
   body = {
@@ -59,13 +59,13 @@
   }
   ```
 
-- DELETE `/api/user/profile?mail=[email]`
+- DELETE: `/api/user/profile?mail=[email]`
 
 ### Update
 
 - Section
-  - POST `/api/update/section/unlock?mail=[email]&id=[id]`
-  - POST `/api/update/section/lock?mail=[email]&id=[id]`
+  - POST: `/api/update/section/unlock?mail=[email]&id=[id]`
+  - POST: `/api/update/section/lock?mail=[email]&id=[id]`
 - Bag
-  - POST `/api/update/bag/add?mail=[email]&item=[item]`
-  - POST `/api/update/bag/remove?mail=[email]&item=[item]`
+  - POST: `/api/update/bag/add?mail=[email]&item=[item]`
+  - POST: `/api/update/bag/remove?mail=[email]&item=[item]`
