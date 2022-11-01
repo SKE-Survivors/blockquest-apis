@@ -44,7 +44,8 @@
   - GET: `/api/auth/check?email=[email]&token=[token]`
 
 - OAuth
-  - GET: `/api/auth/login/google` (redirect)
+  - GET: `/api/auth/login/google`
+  - GET: `/api/auth/login/github`
 
 ### User
 
