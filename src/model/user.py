@@ -1,86 +1,50 @@
-from mongoengine import connect, Document, StringField, ListField, EmailField, DictField
+from mongoengine import connect, Document, StringField, ListField, EmailField, DictField, BinaryField
 from decouple import config
-from model.section import Lesson, Story
 
 
 class User(Document):
     email = EmailField(primary_key=True, required=True)
     username = StringField(required=True, max_length=20)
-    password = StringField(required=True)
-    unlocked_lesson = DictField(default={})
-    unlocked_story = DictField(default={})
+    password = BinaryField(required=True)
     bag = ListField(default=[])
 
+    # todo: add default sections {section_id: False, ...}
+    unlocked_lesson = DictField(default={})
+    unlocked_story = DictField(default={})
 
-class UserHandler:
-    def __init__(self):
-        connect(
-            db=config('DB_NAME'),
-            username=config('DB_USERNAME'),
-            password=config('DB_PASSWORD'),
-            host=config('DB_HOST'),
-            authentication_source='admin',
-            port=int(config('DB_PORT')),
-        )
-        print("Connected to database")
-
-    def add_user(self, mail, username, password) -> User:
-        lessons = dict()
-        for lesson in Lesson.objects():
-            lessons[lesson.section_id] = False
-
-        stories = dict()
-        for story in Story.objects():
-            stories[story.section_id] = False
-
-        user = User(
-            email=mail,
-            username=username,
-            password=password,
-            unlocked_lesson=lessons,
-            unlocked_story=stories,
-        ).save()
-        print(f"Added user: {mail}")
-        return user
-
-    def find_user(self, mail) -> User:
-        return User.objects.get(email=mail)
-
-    def delete_user(self, mail):
-        user = self.find_user(mail)
-        user.delete()
-        print(f"Deleted user: {mail}")
-
-    def update_profile(self, mail, **kwargs):
-        user = self.find_user(mail)
-        user.update(**kwargs)
-        print(f"Updated [profile] user: {mail}")
-
-    def unlock_section(self, mail, section_id, unlock=True):
-        user = self.find_user(mail)
-        section = section_id.upper()
-
-        if section in user.unlocked_lesson.keys():
-            user.unlocked_lesson[section] = unlock
-            user.save()
-        elif section in user.unlocked_story.keys():
-            user.unlocked_story[section] = unlock
-            user.save()
-        else:
-            raise ValueError("invalid section id")
-        print(f"Updated [section status] user: {mail}")
-
-    def update_bag(self, mail, item):
-        user = self.find_user(mail)
-        if item in user.bag:
-            user.bag.remove(item)
-        else:
-            user.bag.append(item)
-        user.save()
-        print(f"Updated [bag item] user: {mail}")
+    def to_dict(self):
+        return {
+            "email": self.email,
+            "username": self.username,
+            "password": self.password,
+            "bag": self.bag,
+            "unlocked_lesson": self.unlocked_lesson,
+            "unlocked_story": self.unlocked_story
+        }
 
 
 # ! temporary: just for testing
 if __name__ == '__main__':
-    uh = UserHandler()
-    user = uh.add_user("first@gmail.com", "username", "password")
+    connect(
+        db=config('DB_NAME'),
+        username=config('DB_USERNAME'),
+        password=config('DB_PASSWORD'),
+        host=config('DB_HOST'),
+        authentication_source='admin',
+        port=int(config('DB_PORT')),
+    )
+
+    User(
+        email="first@gmail.com",
+        username="username",
+        password=b"password",
+        unlocked_lesson={
+            "L1": False,
+            "L2": False,
+            "L3": False,
+        },
+        unlocked_story={
+            "S1": False,
+            "S2": False,
+        },
+    ).save()

@@ -16,22 +16,58 @@
 
 ## Endpoints
 
+### Auth
+
+- GET: `/api/auth/logout?email=[email]&token=[token]` (not supposed to be, but easier)
+- GET: `/api/auth/check?email=[email]&token=[token]`
+
+- Manual
+
+  - POST: `/api/auth/signup`
+
+    ```py
+    body = {
+      "email": "",
+      "username": "",
+      "password": "",
+      "confirm-password": "",
+    }
+    ```
+
+  - POST: `/api/auth/login`
+
+    ```py
+    body = {
+      "email": "",
+      "password": "",
+    }
+    ```
+
+- OAuth
+  - GET: `/api/auth/login/google`
+  - GET: `/api/auth/login/github`
+
 ### User
 
-- GET: `/api/user?mail=[email]`
-<!-- - POST: `/api/user`
+- GET: `/api/user/profile?mail=[email]`
 
-  body: `{ "mail": "email@email.com", "username": "username", "password": "password" }` -->
+- PUT: `/api/user/profile?mail=[email]&token=[token]`
 
-- PUT `/api/user?mail=[email]`
+  ```py
+  body = {
+    "username": "",
+    "password": "",
+    "confirm-password": "",
+  }
+  ```
 
-  body: `{ "username": "username", "password": "password" }`
-
-- DELETE `/api/user?mail=[email]`
+- DELETE: `/api/user/profile?mail=[email]&token=[token]`
 
 ### Update
 
 - Section
-  - POST `/api/update/section?mail=[email]&id=[id]`
+  - POST: `/api/update/section/unlock?mail=[email]&id=[id]&token=[token]`
+  - POST: `/api/update/section/lock?mail=[email]&id=[id]&token=[token]`
 - Bag
-  - POST `/api/update/section?mail=[email]&item=[item]`
+  - POST: `/api/update/bag/add?mail=[email]&item=[item]&token=[token]`
+  - POST: `/api/update/bag/remove?mail=[email]&item=[item]&token=[token]`

@@ -1,31 +1,159 @@
-from flask import Blueprint
-from flask_cors import cross_origin, request
-from model.user import UserHandler
+from flask import Blueprint, request
+from flask_cors import CORS, cross_origin
+from handler import DatabaseHandler, SessionHandler
 from utils import build_response
 
 update_endpoint = Blueprint('update', __name__)
-user_handler = UserHandler()
+CORS(update_endpoint)
+
+dbh = DatabaseHandler()
+sh = SessionHandler()
 
 
-@update_endpoint.route("/section", methods=["POST"])
+@update_endpoint.route('/')
+def index():
+    return 'update ok!'
+
+
+@update_endpoint.route("/section/unlock", methods=["POST"])
 @cross_origin()
 def unlock_section():
-    mail = request.args.get("mail")
+    email = request.args.get("email")
+    token = request.args.get("token")
     section_id = request.args.get("id")
 
-    user_handler.unlock_section(mail, section_id)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section_id} UNLOCKED"}
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not section_id:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: section_id'}
+        return build_response(status_code=400, body=body)
 
+    section = str(section_id).upper()
+
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    user = dbh.find_user(email)
+    if not user:
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
+        return build_response(status_code=400, body=body)
+
+    l1 = list(user.unlocked_lesson.keys())
+    l2 = list(user.unlocked_story.keys())
+    if section not in l1 + l2:
+        body = {
+            "STATUS": "FAILED",
+            "MESSAGE": f"Section not exist (for the user)"
+        }
+        return build_response(status_code=400, body=body)
+
+    dbh.unlock_section(email, section)
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} UNLOCKED"}
     return build_response(status_code=201, body=body)
 
 
-@update_endpoint.route("/bag", methods=["POST"])
+@update_endpoint.route("/section/lock", methods=["POST"])
 @cross_origin()
-def update_bag():
-    mail = request.args.get("mail")
+def lock_section():
+    email = request.args.get("email")
+    token = request.args.get("token")
+    section_id = request.args.get("id")
+
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not section_id:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: section_id'}
+        return build_response(status_code=400, body=body)
+
+    section = str(section_id).upper()
+
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    user = dbh.find_user(email)
+    if not user:
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
+        return build_response(status_code=400, body=body)
+
+    l1 = list(user.unlocked_lesson.keys())
+    l2 = list(user.unlocked_story.keys())
+    if section not in l1 + l2:
+        body = {
+            "STATUS": "FAILED",
+            "MESSAGE": f"Section not exist (for the user)"
+        }
+        return build_response(status_code=400, body=body)
+
+    dbh.unlock_section(email, section, False)
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} LOCKED"}
+    return build_response(status_code=201, body=body)
+
+
+@update_endpoint.route("/bag/add", methods=["POST"])
+@cross_origin()
+def add_item():
+    email = request.args.get("email")
+    token = request.args.get("token")
     item = request.args.get("item")
 
-    user_handler.update_bag(mail, item)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} UPDATED"}
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not item:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: item'}
+        return build_response(status_code=400, body=body)
 
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    if not dbh.find_user(email):
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
+        return build_response(status_code=400, body=body)
+
+    dbh.update_bag(email, item)
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} ADDED"}
+    return build_response(status_code=201, body=body)
+
+
+@update_endpoint.route("/bag/remove", methods=["POST"])
+@cross_origin()
+def remove_item():
+    email = request.args.get("email")
+    token = request.args.get("token")
+    item = request.args.get("item")
+
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not item:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: item'}
+        return build_response(status_code=400, body=body)
+
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    if not dbh.find_user(email):
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
+        return build_response(status_code=400, body=body)
+
+    dbh.update_bag(email, item, False)
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} REMOVED"}
     return build_response(status_code=201, body=body)
