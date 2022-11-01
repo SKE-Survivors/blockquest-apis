@@ -4,9 +4,11 @@ from authlib.integrations.flask_client import OAuth
 from loginpass import create_flask_blueprint, Google, GitHub
 from decouple import config
 from handler import handle_authorize
+import config as conf
 import api
 
 app = Flask(__name__)
+app.secret_key = conf.SECRET_KEY
 app.config.from_pyfile('config.py')
 CORS(app)
 
@@ -29,4 +31,4 @@ def root():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=config("APP_PORT"), debug=False)
+    app.run(host="127.0.0.1", port=config("APP_PORT"), debug=False)

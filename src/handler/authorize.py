@@ -15,12 +15,12 @@ def handle_authorize(remote, _token, user_info):
 
     try:
         # check if user exist
-        user = dbh.find_user(user_info["username"])
+        user = dbh.find_user(user_info["email"])
         # (if not) create user, add to database
         if not user:
             user = dbh.add_user(
                 mail=user_info["email"],
-                username=user_info["username"],
+                username=user_info["name"],
                 password=b"",  # or None
             )
     except Exception as err:
