@@ -21,7 +21,7 @@ def index():
 def user():
     email = request.args.get("email")
     if not email:
-        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument'}
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
         return build_response(status_code=400, body=body)
 
     user = dbh.find_user(email)
@@ -50,7 +50,9 @@ def user():
     if request.method == "PUT":
         token = request.args.get("token")
 
-        # todo: check args existence
+        if not token:
+            body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+            return build_response(status_code=400, body=body)
 
         data = request.json
         if not data:
@@ -93,7 +95,9 @@ def user():
     if request.method == "DELETE":
         token = request.args.get("token")
 
-        # todo: check args existence
+        if not token:
+            body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+            return build_response(status_code=400, body=body)
 
         if not sh.in_session(email, token):
             body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}

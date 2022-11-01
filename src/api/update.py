@@ -22,8 +22,16 @@ def unlock_section():
     token = request.args.get("token")
     section_id = request.args.get("id")
 
-    # todo: check args existence
-    
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not section_id:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: section_id'}
+        return build_response(status_code=400, body=body)
+
     section = str(section_id).upper()
 
     if not sh.in_session(email, token):
@@ -56,8 +64,16 @@ def lock_section():
     token = request.args.get("token")
     section_id = request.args.get("id")
 
-    # todo: check args existence
-    
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not section_id:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: section_id'}
+        return build_response(status_code=400, body=body)
+
     section = str(section_id).upper()
 
     if not sh.in_session(email, token):
@@ -90,7 +106,15 @@ def add_item():
     token = request.args.get("token")
     item = request.args.get("item")
 
-    # todo: check args existence
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not item:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: item'}
+        return build_response(status_code=400, body=body)
 
     if not sh.in_session(email, token):
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
@@ -112,7 +136,15 @@ def remove_item():
     token = request.args.get("token")
     item = request.args.get("item")
 
-    # todo: check args existence
+    if not email:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: email'}
+        return build_response(status_code=400, body=body)
+    if not token:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
+        return build_response(status_code=400, body=body)
+    if not item:
+        body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: item'}
+        return build_response(status_code=400, body=body)
 
     if not sh.in_session(email, token):
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
