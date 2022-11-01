@@ -109,6 +109,7 @@ def logout():
     return build_response(status_code=200, body=body)
 
 
+# for front-end to call before load page
 @auth_endpoint.route("/check")
 @cross_origin()
 def check():
@@ -119,7 +120,7 @@ def check():
         body = {"STATUS": "FAILED", "MESSAGE": f"User not exist"}
         return build_response(status_code=400, body=body)
 
-    msg = "User is authorized" if sh.check_session(
+    msg = "User is authorized" if sh.in_session(
         email, token) else "User is not authorized"
 
     body = {"STATUS": "SUCCESS", "MESSAGE": msg}

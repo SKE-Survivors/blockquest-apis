@@ -24,7 +24,7 @@ class SessionHandler:
         return token
 
     # check login session
-    def check_session(self, email: str, token: str):
+    def in_session(self, email: str, token: str):
         return bytes(token, 'utf-8') == self.client.hget(HASHNAME, email)
 
     # logout

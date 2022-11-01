@@ -18,7 +18,7 @@
 
 ### Auth
 
-- GET: `/api/auth/logout?email=[email]` (not supposed to be, but easier)
+- GET: `/api/auth/logout?email=[email]&token=[token]` (not supposed to be, but easier)
 - GET: `/api/auth/check?email=[email]&token=[token]`
 
 - Manual
@@ -51,7 +51,7 @@
 
 - GET: `/api/user/profile?mail=[email]`
 
-- PUT: `/api/user/profile?mail=[email]`
+- PUT: `/api/user/profile?mail=[email]&token=[token]`
 
   ```py
   body = {
@@ -61,13 +61,13 @@
   }
   ```
 
-- DELETE: `/api/user/profile?mail=[email]`
+- DELETE: `/api/user/profile?mail=[email]&token=[token]`
 
 ### Update
 
 - Section
-  - POST: `/api/update/section/unlock?mail=[email]&id=[id]`
-  - POST: `/api/update/section/lock?mail=[email]&id=[id]`
+  - POST: `/api/update/section/unlock?mail=[email]&id=[id]&token=[token]`
+  - POST: `/api/update/section/lock?mail=[email]&id=[id]&token=[token]`
 - Bag
-  - POST: `/api/update/bag/add?mail=[email]&item=[item]`
-  - POST: `/api/update/bag/remove?mail=[email]&item=[item]`
+  - POST: `/api/update/bag/add?mail=[email]&item=[item]&token=[token]`
+  - POST: `/api/update/bag/remove?mail=[email]&item=[item]&token=[token]`

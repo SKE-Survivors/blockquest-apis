@@ -1,14 +1,13 @@
 from flask import Blueprint, request
 from flask_cors import CORS, cross_origin
-from handler import DatabaseHandler
+from handler import DatabaseHandler, SessionHandler
 from utils import build_response
 
 update_endpoint = Blueprint('update', __name__)
 CORS(update_endpoint)
 
 dbh = DatabaseHandler()
-
-# todo: check login session (aka call /auth/check before)
+sh = SessionHandler()
 
 
 @update_endpoint.route('/')
@@ -19,13 +18,19 @@ def index():
 @update_endpoint.route("/section/unlock", methods=["POST"])
 @cross_origin()
 def unlock_section():
-    mail = request.args.get("mail")
+    email = request.args.get("email")
+    token = request.args.get("token")
     section_id = request.args.get("id")
 
     # todo: check args existence
+    
     section = str(section_id).upper()
 
-    user = dbh.find_user(mail)
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    user = dbh.find_user(email)
     if not user:
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
@@ -39,7 +44,7 @@ def unlock_section():
         }
         return build_response(status_code=400, body=body)
 
-    dbh.unlock_section(mail, section)
+    dbh.unlock_section(email, section)
     body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} UNLOCKED"}
     return build_response(status_code=201, body=body)
 
@@ -47,13 +52,19 @@ def unlock_section():
 @update_endpoint.route("/section/lock", methods=["POST"])
 @cross_origin()
 def lock_section():
-    mail = request.args.get("mail")
+    email = request.args.get("email")
+    token = request.args.get("token")
     section_id = request.args.get("id")
 
     # todo: check args existence
+    
     section = str(section_id).upper()
 
-    user = dbh.find_user(mail)
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    user = dbh.find_user(email)
     if not user:
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
@@ -67,7 +78,7 @@ def lock_section():
         }
         return build_response(status_code=400, body=body)
 
-    dbh.unlock_section(mail, section, False)
+    dbh.unlock_section(email, section, False)
     body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} LOCKED"}
     return build_response(status_code=201, body=body)
 
@@ -75,16 +86,21 @@ def lock_section():
 @update_endpoint.route("/bag/add", methods=["POST"])
 @cross_origin()
 def add_item():
-    mail = request.args.get("mail")
+    email = request.args.get("email")
+    token = request.args.get("token")
     item = request.args.get("item")
 
     # todo: check args existence
 
-    if not dbh.find_user(mail):
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    if not dbh.find_user(email):
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
-    dbh.update_bag(mail, item)
+    dbh.update_bag(email, item)
     body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} ADDED"}
     return build_response(status_code=201, body=body)
 
@@ -92,15 +108,20 @@ def add_item():
 @update_endpoint.route("/bag/remove", methods=["POST"])
 @cross_origin()
 def remove_item():
-    mail = request.args.get("mail")
+    email = request.args.get("email")
+    token = request.args.get("token")
     item = request.args.get("item")
 
     # todo: check args existence
 
-    if not dbh.find_user(mail):
+    if not sh.in_session(email, token):
+        body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+        return build_response(status_code=400, body=body)
+
+    if not dbh.find_user(email):
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
-    dbh.update_bag(mail, item, False)
+    dbh.update_bag(email, item, False)
     body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} REMOVED"}
     return build_response(status_code=201, body=body)

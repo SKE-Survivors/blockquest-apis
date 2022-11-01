@@ -1,15 +1,14 @@
 from tkinter import E
 from flask import Blueprint, request
 from flask_cors import CORS, cross_origin
-from handler import DatabaseHandler
+from handler import DatabaseHandler, SessionHandler
 from utils import build_response, encode_pwd
 
 user_endpoint = Blueprint('user', __name__)
 CORS(user_endpoint)
 
 dbh = DatabaseHandler()
-
-# todo: check login session (aka call /auth/check before)
+sh = SessionHandler()
 
 
 @user_endpoint.route('/')
@@ -20,12 +19,12 @@ def index():
 @user_endpoint.route("/profile", methods=['GET', 'PUT', 'DELETE'])
 @cross_origin()
 def user():
-    mail = request.args.get("mail")
-    if not mail:
+    email = request.args.get("email")
+    if not email:
         body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument'}
         return build_response(status_code=400, body=body)
 
-    user = dbh.find_user(mail)
+    user = dbh.find_user(email)
     if not user:
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
@@ -40,7 +39,7 @@ def user():
             "STATUS":
             "SUCCESS",
             "userInfo": [{
-                "mail": email,
+                "email": email,
                 "username": username,
                 "unlocked_lesson": lesson,
                 "unlocked_story": story,
@@ -49,9 +48,17 @@ def user():
         }
 
     if request.method == "PUT":
+        token = request.args.get("token")
+
+        # todo: check args existence
+
         data = request.json
         if not data:
             body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing body'}
+            return build_response(status_code=400, body=body)
+
+        if not sh.in_session(email, token):
+            body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
             return build_response(status_code=400, body=body)
 
         for field in data:
@@ -80,10 +87,18 @@ def user():
                     )
                 user.password = encode_pwd(data[field])
 
-        dbh.update_profile(mail, **user.to_dict())
+        dbh.update_profile(email, **user.to_dict())
         body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {user.email}"}
 
     if request.method == "DELETE":
+        token = request.args.get("token")
+
+        # todo: check args existence
+
+        if not sh.in_session(email, token):
+            body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
+            return build_response(status_code=400, body=body)
+
         dbh.delete_user(user.email)
         body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {user.email}"}
 
