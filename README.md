@@ -18,6 +18,9 @@
 
 ### Auth
 
+- GET: `/api/auth/logout?email=[email]` (not supposed to be, but easier)
+- GET: `/api/auth/check?email=[email]&token=[token]`
+
 - Manual
 
   - POST: `/api/auth/signup`
@@ -40,9 +43,6 @@
     }
     ```
 
-  - GET: `/api/auth/logout?email=[email]` (not supposed to be, but easier)
-  - GET: `/api/auth/check?email=[email]&token=[token]`
-
 - OAuth
   - GET: `/api/auth/login/google`
   - GET: `/api/auth/login/github`
@@ -57,6 +57,7 @@
   body = {
     "username": "",
     "password": "",
+    "confirm-password": "",
   }
   ```
 

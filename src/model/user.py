@@ -12,6 +12,16 @@ class User(Document):
     unlocked_lesson = DictField(default={})
     unlocked_story = DictField(default={})
 
+    def to_dict(self):
+        return {
+            "email": self.email,
+            "username": self.username,
+            "password": self.password,
+            "bag": self.bag,
+            "unlocked_lesson": self.unlocked_lesson,
+            "unlocked_story": self.unlocked_story
+        }
+
 
 # ! temporary: just for testing
 if __name__ == '__main__':

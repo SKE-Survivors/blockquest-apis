@@ -1,3 +1,4 @@
+from tkinter import E
 from flask import Blueprint, request
 from flask_cors import CORS, cross_origin
 from handler import DatabaseHandler
@@ -24,12 +25,12 @@ def user():
         body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument'}
         return build_response(status_code=400, body=body)
 
-    if not dbh.find_user(mail):
+    user = dbh.find_user(mail)
+    if not user:
         body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
     if request.method == "GET":
-        user = dbh.find_user(mail=mail)
         email = user.email
         username = user.username
         lesson = user.unlocked_lesson
@@ -47,30 +48,43 @@ def user():
             }],
         }
 
-    # todo: add confirm-password field
     if request.method == "PUT":
         data = request.json
         if not data:
             body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing body'}
             return build_response(status_code=400, body=body)
 
-        for key in data:
-            if key != "username" and key != "password":
-                return build_response(
-                    status_code=400,
-                    body={
-                        'STATUS': 'FAILED',
-                        'MESSAGE': 'INCORRECT BODY'
-                    },
-                )
-            if key == "password":
-                data[key] = encode_pwd(data[key])
+        for field in data:
+            # note: you can add more field to update here
+            if field == "username":
+                user.username = data[field]
 
-        dbh.update_profile(mail, **data)
-        body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {mail}"}
+            if field == "password":
+                try:
+                    confirm = data["confirm-password"]
+                except Exception:
+                    return build_response(
+                        status_code=400,
+                        body={
+                            'STATUS': 'FAILED',
+                            'MESSAGE': 'Missing confirm-password'
+                        },
+                    )
+                if data[field] != confirm:
+                    return build_response(
+                        status_code=400,
+                        body={
+                            'STATUS': 'FAILED',
+                            'MESSAGE': 'Confirm password mismatch'
+                        },
+                    )
+                user.password = encode_pwd(data[field])
+
+        dbh.update_profile(mail, **user.to_dict())
+        body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {user.email}"}
 
     if request.method == "DELETE":
-        dbh.delete_user(mail=mail)
-        body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {mail}"}
+        dbh.delete_user(user.email)
+        body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {user.email}"}
 
     return build_response(status_code=201, body=body)
