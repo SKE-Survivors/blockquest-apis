@@ -29,17 +29,17 @@ def signup():
         return build_response(status_code=400, err=err)
 
     if not email:
-        body = {"STATUS": "FAILED", "MESSAGE": f"Email is required!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"Email is required"}
         return build_response(status_code=400, body=body)
     if not password:
-        body = {"STATUS": "FAILED", "MESSAGE": f"Password is required!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"Password is required"}
         return build_response(status_code=400, body=body)
     if confirm_password != password:
-        body = {"STATUS": "FAILED", "MESSAGE": f"Confirm password is wrong!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"Confirm password is wrong"}
         return build_response(status_code=400, body=body)
 
     if dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User already exist!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"User already exist"}
         return build_response(status_code=400, body=body)
 
     try:
@@ -67,20 +67,20 @@ def login():
         return build_response(status_code=400, err=err)
 
     if not email:
-        body = {"STATUS": "FAILED", "MESSAGE": f"Email is required!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"Email is required"}
         return build_response(status_code=400, body=body)
     if not password:
-        body = {"STATUS": "FAILED", "MESSAGE": f"Password is required!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"Password is required"}
         return build_response(status_code=400, body=body)
 
     # check email and password
     user = dbh.find_user(email)
     if not user:
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
     if check_pwd(password, user.password):
-        body = {"STATUS": "FAILED", "MESSAGE": f"Wrong password!"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"Wrong password"}
         return build_response(status_code=400, body=body)
 
     # gen token and add to redis
@@ -101,7 +101,7 @@ def logout():
     email = request.args.get("email")
 
     if not dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User not exist"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
     sh.remove_session(email)
@@ -117,7 +117,7 @@ def check():
     token = request.args.get("token")
 
     if not dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User not exist"}
+        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
     msg = "User is authorized" if sh.in_session(
