@@ -6,8 +6,10 @@ import sys
 
 from mongoengine import errors
 
-sys.path.insert(0,"../src/")
+sys.path.append("c:\\Users\\DELL\\GitHub\\blockquest-api\\test\\api\\..\\..\\src\\handler")
+sys.path.insert(0,"c:\\Users\\DELL\\GitHub\\blockquest-api\\src\\utils")
 
+print(sys.path)
 from handler.database import DatabaseHandler
 from utils.password import encode_pwd
 
