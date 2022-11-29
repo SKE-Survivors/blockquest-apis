@@ -18,7 +18,6 @@ class TestUpdate(unittest.TestCase):
         self.dbh.add_user("testemail@email.com", "emailer", encode_pwd("eemail"))
 
         self.sh = SessionHandler()
-        print(self.dbh.find_user("testemail@email.com").to_dict())
 
         body = {"email": "testemail@email.com", "password": "eemail"}
         resp = requests.post(
@@ -27,8 +26,6 @@ class TestUpdate(unittest.TestCase):
             headers=self.headers,
         )
         self.login_resp_body = resp.json()
-
-        print()
 
     @classmethod
     def tearDownClass(self) -> None:

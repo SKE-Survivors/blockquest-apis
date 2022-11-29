@@ -54,8 +54,9 @@ def user():
             body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing argument: token'}
             return build_response(status_code=400, body=body)
 
-        data = request.json
-        if not data:
+        try:
+            data = request.json
+        except Exception as e:
             body = {'STATUS': 'FAILED', 'MESSAGE': 'Missing body'}
             return build_response(status_code=400, body=body)
 
@@ -90,7 +91,7 @@ def user():
                 user.password = encode_pwd(data[field])
 
         dbh.update_profile(email, **user.to_dict())
-        body = {"STATUS": "SUCCESS", "MESSAGE": f"UPDATE USER {user.email}"}
+        body = {"STATUS": "SUCCESS", "MESSAGE": f"Update user {user.email}"}
 
     if request.method == "DELETE":
         token = request.args.get("token")
@@ -104,6 +105,6 @@ def user():
             return build_response(status_code=400, body=body)
 
         dbh.delete_user(user.email)
-        body = {"STATUS": "SUCCESS", "MESSAGE": f"DELETE USER {user.email}"}
+        body = {"STATUS": "SUCCESS", "MESSAGE": f"Delete user {user.email}"}
 
     return build_response(status_code=201, body=body)

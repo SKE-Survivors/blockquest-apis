@@ -38,13 +38,7 @@ def unlock_section():
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
         return build_response(status_code=400, body=body)
 
-    # is this code actually reachable ?
-    # how to reach this code ?
     user = dbh.find_user(email)
-    if not user:
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
-    ###
 
     l1 = list(user.unlocked_lesson.keys())
     l2 = list(user.unlocked_story.keys())
@@ -84,9 +78,6 @@ def lock_section():
         return build_response(status_code=400, body=body)
 
     user = dbh.find_user(email)
-    if not user:
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
 
     l1 = list(user.unlocked_lesson.keys())
     l2 = list(user.unlocked_story.keys())
@@ -123,10 +114,6 @@ def add_item():
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
         return build_response(status_code=400, body=body)
 
-    if not dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
-
     dbh.update_bag(email, item)
     body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} added"}
     return build_response(status_code=201, body=body)
@@ -151,10 +138,6 @@ def remove_item():
 
     if not sh.in_session(email, token):
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
-        return build_response(status_code=400, body=body)
-
-    if not dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
         return build_response(status_code=400, body=body)
 
     dbh.update_bag(email, item, False)
