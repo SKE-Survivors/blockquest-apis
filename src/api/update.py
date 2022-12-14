@@ -39,21 +39,18 @@ def unlock_section():
         return build_response(status_code=400, body=body)
 
     user = dbh.find_user(email)
-    if not user:
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
 
     l1 = list(user.unlocked_lesson.keys())
     l2 = list(user.unlocked_story.keys())
     if section not in l1 + l2:
         body = {
             "STATUS": "FAILED",
-            "MESSAGE": f"Section not exist (for the user)"
+            "MESSAGE": f"Section does not exist (for this user)"
         }
         return build_response(status_code=400, body=body)
 
     dbh.unlock_section(email, section)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} UNLOCKED"}
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"Section {section} unlocked"}
     return build_response(status_code=201, body=body)
 
 
@@ -81,21 +78,18 @@ def lock_section():
         return build_response(status_code=400, body=body)
 
     user = dbh.find_user(email)
-    if not user:
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
 
     l1 = list(user.unlocked_lesson.keys())
     l2 = list(user.unlocked_story.keys())
     if section not in l1 + l2:
         body = {
             "STATUS": "FAILED",
-            "MESSAGE": f"Section not exist (for the user)"
+            "MESSAGE": f"Section does not exist (for this user)"
         }
         return build_response(status_code=400, body=body)
 
     dbh.unlock_section(email, section, False)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"SECTION {section} LOCKED"}
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"Section {section} locked"}
     return build_response(status_code=201, body=body)
 
 
@@ -120,12 +114,8 @@ def add_item():
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
         return build_response(status_code=400, body=body)
 
-    if not dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
-
     dbh.update_bag(email, item)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} ADDED"}
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} added"}
     return build_response(status_code=201, body=body)
 
 
@@ -150,10 +140,6 @@ def remove_item():
         body = {"STATUS": "FAILED", "MESSAGE": f"Permission denied"}
         return build_response(status_code=400, body=body)
 
-    if not dbh.find_user(email):
-        body = {"STATUS": "FAILED", "MESSAGE": f"User does not exist"}
-        return build_response(status_code=400, body=body)
-
     dbh.update_bag(email, item, False)
-    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} REMOVED"}
+    body = {"STATUS": "SUCCESS", "MESSAGE": f"{item} removed"}
     return build_response(status_code=201, body=body)

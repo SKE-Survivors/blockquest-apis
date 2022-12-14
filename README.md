@@ -49,9 +49,9 @@
 
 ### User
 
-- GET: `/api/user/profile?mail=[email]`
+- GET: `/api/user/profile?email=[email]`
 
-- PUT: `/api/user/profile?mail=[email]&token=[token]`
+- PUT: `/api/user/profile?email=[email]&token=[token]`
 
   ```py
   body = {
@@ -61,13 +61,13 @@
   }
   ```
 
-- DELETE: `/api/user/profile?mail=[email]&token=[token]`
+- DELETE: `/api/user/profile?email=[email]&token=[token]`
 
 ### Update
 
 - Section
-  - POST: `/api/update/section/unlock?mail=[email]&id=[id]&token=[token]`
-  - POST: `/api/update/section/lock?mail=[email]&id=[id]&token=[token]`
+  - POST: `/api/update/section/unlock?email=[email]&id=[id]&token=[token]`
+  - POST: `/api/update/section/lock?email=[email]&id=[id]&token=[token]`
 - Bag
-  - POST: `/api/update/bag/add?mail=[email]&item=[item]&token=[token]`
-  - POST: `/api/update/bag/remove?mail=[email]&item=[item]&token=[token]`
+  - POST: `/api/update/bag/add?email=[email]&item=[item]&token=[token]`
+  - POST: `/api/update/bag/remove?email=[email]&item=[item]&token=[token]`
